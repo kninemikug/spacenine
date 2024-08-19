@@ -319,6 +319,10 @@ public class Board {
 			} catch (SQLException e) {
 			}
 		}
+		if(Operation.loginId != null) {
+			Users user = new Users();
+			user.updateLastLogout(Operation.loginId);
+		}
 		System.out.println("** 게시판 종료 **");
 		System.exit(0);
 	}

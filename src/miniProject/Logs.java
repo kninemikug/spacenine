@@ -9,6 +9,4 @@ public class Logs {
     private String user_id;
     private String event;
     private Date time;
-
-    
 }

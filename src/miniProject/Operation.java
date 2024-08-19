@@ -2,6 +2,8 @@ package miniProject;
 
 import java.util.Scanner;
 
+import oracle.net.aso.l;
+
 public class Operation {
     static Scanner sc = new Scanner(System.in);
     static String cmd;
@@ -194,10 +196,10 @@ public class Operation {
         
         if (isAdmin) {
             do myPageAdmin();
-            while (!cmd.equals("4")); 
+            while (!cmd.equals("4") && !cmd.equals("deleteaccount")); 
         } else {
             do myPage();
-            while (!cmd.equals("3"));
+            while (!cmd.equals("3") && !cmd.equals("deleteaccount"));
         }
     }
 
@@ -236,7 +238,18 @@ public class Operation {
                 user.updateLastLogout(loginId);
                 System.exit(0);
                 break;
-         
+            case "deleteaccount":
+                System.out.println("비밀번호를 입력하세요");
+                String inputPw = Operation.sc.nextLine();
+                if (inputPw.equals(loginPw)) {
+                    System.out.println("정말 탈퇴합니까?");
+                    String delAcc = Operation.sc.nextLine();
+                    if (delAcc.equalsIgnoreCase("y")) {
+                        user.delete();
+                    }
+                    System.out.println("탈퇴 완료");
+                }
+                break;
             default:
                 System.out.println(":   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
                 break;
@@ -264,7 +277,17 @@ public class Operation {
                 user.updateLastLogout(loginId);
                 System.exit(0);
                 break;
-         
+            case "deleteaccount":
+                System.out.println("비밀번호를 입력하세요");
+                String inputPw = Operation.sc.nextLine();
+                if (inputPw.equals(loginPw)) {
+                    System.out.println("정말 탈퇴합니까?");
+                    String delAcc = Operation.sc.nextLine();
+                    if (delAcc.equalsIgnoreCase("y")) {
+                        user.delete();
+                    }
+                }
+                break;
             default:
                 System.out.println(":   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
                 break;

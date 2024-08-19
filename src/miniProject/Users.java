@@ -253,12 +253,28 @@ public class Users {
         }
     }
 
+    public void delete() {
+        try {
+            String sql = "DELETE users WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, Operation.loginId);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
     public void exit() {
 		if(conn != null) {
 			try {
 				conn.close();
 			} catch (SQLException e) {
 			}
+		}
+        if(Operation.loginId != null) {
+			updateLastLogout(Operation.loginId);
 		}
 		System.out.println("** 프로그램 종료 **");
 		System.exit(0);
