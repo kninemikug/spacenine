@@ -193,6 +193,62 @@ public class Users {
         }
     }
 
+    public String newName() {
+        try {
+            System.out.println("새로운 이름을 입력해주세요.");
+            System.out.print("> ");
+            String newName = Operation.sc.nextLine();
+            newName = Operation.isNameNull(newName);
+            return newName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+            return "fail";
+        }
+    }
+
+    public String newPno() {
+        try {
+            System.out.println("새로운 전화번호를 입력해주세요. [ex. 010-1234-5678]");
+            System.out.print("> ");
+            String newPno = Operation.sc.nextLine();
+            newPno = Operation.pnoFormatWrong(newPno);
+            return newPno;
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+            return "fail";
+        }
+    }
+
+    public String newAdrs() {
+        try {
+            System.out.println("새로운 주소를 입력해주세요.");
+            System.out.print("> ");
+            String newAdrs = Operation.sc.nextLine();
+            newAdrs = Operation.isAddressNull(newAdrs);
+            return newAdrs;
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+            return "fail";
+        }
+    }
+
+    public String newGender() {
+        try {
+            System.out.println("새로운 성별을 입력해주세요.(남자:1, 여자:2)");
+            System.out.print("> ");
+            String newGender = Operation.sc.nextLine();
+            newGender = Operation.genderInputWrong(newGender);
+            return newGender;
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+            return "fail";
+        }
+    }
+
     public void changePw(String id, String newPw) {
         try {
             String sql  = "Update users SET password = ? WHERE id = ?";
@@ -203,6 +259,70 @@ public class Users {
             pstmt.close();
 
             System.out.println("새로운 비밀번호로 변경이 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    public void changeName(String id, String newName) {
+        try {
+            String sql  = "Update users SET name = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newName);
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            System.out.println("새로운 이름으로 변경이 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    public void changePno(String id, String newPno) {
+        try {
+            String sql  = "Update users SET phone = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newPno);
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            System.out.println("새로운 전화번호로 변경이 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    public void changeAdrs(String id, String newAdrs) {
+        try {
+            String sql  = "Update users SET address = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newAdrs);
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            System.out.println("새로운 주소로 변경이 완료되었습니다.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    public void changeGender(String id, String newGender) {
+        try {
+            String sql  = "Update users SET gender = ? WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, newGender);
+            pstmt.setString(2, id);
+            pstmt.executeUpdate();
+            pstmt.close();
+
+            System.out.println("새로운 성별로 변경이 완료되었습니다.");
         } catch (Exception e) {
             e.printStackTrace();
             exit();
@@ -228,6 +348,90 @@ public class Users {
         } catch (Exception e) {
             e.printStackTrace();
             exit();
+        }
+
+        //회원정보 수정
+        System.out.println("수정(e) | 뒤로(q)");
+        String edit = Operation.sc.nextLine();
+        switch (edit) {
+            case "e", "E":
+                System.out.println("비밀번호 입력");
+                edit = Operation.sc.nextLine();
+                if (!edit.equals(Operation.loginPw)) break;
+                
+                do {
+                    System.out.println("어떤거 수정? 1.비밀번호 2.이름 3.전화번호 4.주소 5.성별");
+                    edit = Operation.sc.nextLine();
+                    switch (edit) {
+                        case "1":
+                            changePw(loginId, newPw());
+                            System.out.println("다른거 수정?(y/n)");
+                            do {
+                                edit = Operation.sc.nextLine();
+                                if (edit.equalsIgnoreCase("y")) {
+                                    edit = "0";
+                                    break;
+                                }
+                            } while (!edit.equalsIgnoreCase("y") && !edit.equalsIgnoreCase("n"));
+                            break;
+                        case "2":
+                            changeName(loginId, newName());
+                            System.out.println("다른거 수정?(y/n)");
+                            do {
+                                edit = Operation.sc.nextLine();
+                                if (edit.equalsIgnoreCase("y")) {
+                                    edit = "0";
+                                    break;
+                                }
+                            } while (!edit.equalsIgnoreCase("y") && !edit.equalsIgnoreCase("n"));
+                            break;
+                        case "3":
+                            changePno(loginId, newPno());
+                            System.out.println("다른거 수정?(y/n)");
+                            do {
+                                edit = Operation.sc.nextLine();
+                                if (edit.equalsIgnoreCase("y")) {
+                                    edit = "0";
+                                    break;
+                                }
+                            } while (!edit.equalsIgnoreCase("y") && !edit.equalsIgnoreCase("n"));
+                            break;
+                        case "4":
+                            changeAdrs(loginId, newAdrs());
+                            System.out.println("다른거 수정?(y/n)");
+                            do {
+                                edit = Operation.sc.nextLine();
+                                if (edit.equalsIgnoreCase("y")) {
+                                    edit = "0";
+                                    break;
+                                }
+                            } while (!edit.equalsIgnoreCase("y") && !edit.equalsIgnoreCase("n"));
+                            break;
+                        case "5":
+                            changeGender(loginId, newGender());
+                            System.out.println("다른거 수정?(y/n)");
+                            do {
+                                edit = Operation.sc.nextLine();
+                                if (edit.equalsIgnoreCase("y")) {
+                                    edit = "0";
+                                    break;
+                                }
+                            } while (!edit.equalsIgnoreCase("y") && !edit.equalsIgnoreCase("n"));
+                            break;
+                    
+                        default:
+                            System.out.println("잘못된 입력입니다. 다시 입력하세요.");
+                            edit = "0";
+                            // break;
+                    }
+                } while (edit.equals("0"));
+                break;
+            case "q", "Q":
+                
+                break;
+        
+            default:
+                break;
         }
     }
 
