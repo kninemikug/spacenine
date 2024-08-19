@@ -162,8 +162,16 @@ public class ConsoleDisplay {
     
 
     //============ 게시판 ===================
-    static void board() {
-        System.out.println("이전 페이지(p) | 다음 페이지(n) | 원하는 페이지로 이동(f) | 게시물 상세보기(v) | 새 게시물 작성(w) | 나가기(q)");
+    static void boardFrame() {
+        System.out.println();
+		System.out.println("[게시물 목록]");
+		System.out.println("-----------------------------------------------------------------------");
+		System.out.printf("%-6s%-40s%-20s%-5s%-10s%-10s\n", "no", "title", "writer", "view", "regdate", "last_edit_at");
+		System.out.println("-----------------------------------------------------------------------");
+    }
+    
+    static void boardMenu() {
+        System.out.println("\n이전 페이지(p) | 다음 페이지(n) | 원하는 페이지로 이동(f) | 게시물 상세보기(v) | 새 게시물 작성(w) | 나가기(q)");
         Operation.cmd = Operation.sc.nextLine();
     }
     //============ 게시판 ===================

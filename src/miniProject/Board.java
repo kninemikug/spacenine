@@ -40,14 +40,6 @@ public class Board {
     }
 
     public void list() {
-        //타이틀 및 컬럼명 출력
-		System.out.println();
-		System.out.println("[게시물 목록]");
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.printf("%-6s%-12s%-16s%-40s\n", "no", "writer", "date", "title");
-		System.out.println("-----------------------------------------------------------------------");
-		
-		//boads 테이블에서 게시물 정보를 가져와서 출력하기
 		int pageNum = 1;
 		int temp = 0;
 		boolean isLastPage = false;
@@ -55,7 +47,8 @@ public class Board {
 			try {
 				String sql = "SELECT * FROM (SELECT rownum rnum, b.* FROM board b WHERE rownum <= ?*10 ORDER BY regdate DESC) " +
 								"WHERE rnum BETWEEN (?-1)*10 and ?*10 " +
-								"AND rownum <= 10";
+								"AND rownum <= 10 " +
+								"ORDER BY regdate, no";
 				PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 				pstmt.setInt(1, pageNum);
 				pstmt.setInt(2, pageNum);
@@ -67,6 +60,7 @@ public class Board {
 					pageNum = temp;
 				} else {
 					System.out.println("[ " + pageNum + "페이지 ]");
+					ConsoleDisplay.boardFrame();
 					rs.beforeFirst();
 					while(rs.next()) {		
 						no = rs.getInt("no");
@@ -86,7 +80,7 @@ public class Board {
 						} else regdate = rs.getTime("regdate");
 						last_edit_at = rs.getDate("last_edit_at");
 
-						System.out.printf("%d | %s | %s | %d | %s | %s \n", no, title, user_id, view, regdate, last_edit_at);
+						System.out.printf("%-6d%-40s%-20s%-5d%-10s%-10s\n", no, title, user_id, view, regdate, last_edit_at);
 					}
 				}
 				
@@ -102,7 +96,7 @@ public class Board {
 				exit();
 			}
 
-			ConsoleDisplay.board();
+			ConsoleDisplay.boardMenu();
 
 			switch (Operation.cmd) {
 				case "p", "P":
