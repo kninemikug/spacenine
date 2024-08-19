@@ -44,9 +44,19 @@ public class Users {
             pstmt.setString(4, pno);
             pstmt.setString(5, adrs);
             pstmt.setInt(6, Integer.parseInt(gender));
-            pstmt.executeUpdate();
+            // sql문 execute 실패하면 시퀀스 값 nextval 된 거 다시 1 낮춤
+			try {
+				pstmt.executeUpdate();
+			} catch (SQLIntegrityConstraintViolationException e) {
+				sql = "ALTER SEQUENCE board_seq INCREMENT BY -1";
+				PreparedStatement seqCancle = conn.prepareStatement(sql);
+				seqCancle.executeUpdate();
+				seqCancle.close();
+                pstmt.close();
+                System.out.println(":   이미 존재하는 ID입니다.");
+                return false;
+			}
             pstmt.close();
-        } catch (SQLIntegrityConstraintViolationException e) {System.out.println(":   이미 존재하는 ID입니다."); return false;
         } catch (Exception e) {e.printStackTrace(); exit();}
         return true;
     }
