@@ -84,11 +84,12 @@ public class Board {
 						System.out.printf("%-6d%-40s%-20s%-5d%-10s%-10s\n", no, title, user_id, view, regdate, last_edit_at);
 						loop++;
 					}
+
+					if (loop < 10) {
+						isLastPage = true;
+					}
+					loop = 0;
 				}
-				if (loop < 10) {
-					isLastPage = true;
-				}
-				loop = 0;
 				rs.close();
 				pstmt.close();
 			} catch(SQLException e) {
@@ -125,11 +126,10 @@ public class Board {
 				case "q", "Q" -> {}
 				default -> System.out.println("잘못된 입력입니다.");
 			}
-		} while (!Operation.cmd.equalsIgnoreCase("q"));
-		
-
-		
+		} while (!Operation.cmd.equalsIgnoreCase("q"));		
     }
+
+	
 
 	public void view(){
 		System.out.println("조회하려는 게시물 번호를 입력하세요");
@@ -177,8 +177,7 @@ public class Board {
 									System.out.print("제목 > "); 	
 									title = Operation.sc.nextLine();
 									System.out.println("내용 (내용 입력을 종료하려면 마지막 줄에 q를 입력하세요.)");
-									System.out.println("> ");
-									
+									System.out.print("> ");
 									StringBuilder sb = new StringBuilder();
 									String line = Operation.sc.nextLine();
 									while (!line.equalsIgnoreCase("q")) {
