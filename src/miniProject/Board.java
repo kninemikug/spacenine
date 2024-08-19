@@ -1,12 +1,16 @@
 package miniProject;
 
 import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import lombok.Data;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 @Data
 public class Board {
@@ -71,10 +75,19 @@ public class Board {
 						title = rs.getString("title");
 						content = rs.getString("content");
 						view = rs.getInt("view");
-						regdate = rs.getDate("regdate");
+						regdate = rs.getTimestamp("regdate");
+						
+						Date now = new Date();
+						Calendar cal = Calendar.getInstance();
+						cal.setTime(now);
+						cal.add(Calendar.DATE, -1);
+
+						if (regdate.compareTo(cal.getTime()) < 0) {
+							regdate = rs.getDate("regdate");
+						} else regdate = rs.getTime("regdate");
 						last_edit_at = rs.getDate("last_edit_at");
 
-						System.out.printf("%d | %s | %s | %s | %d \n", no, title, user_id, regdate, view);
+						System.out.printf("%d | %s | %s | %d | %s | %s \n", no, title, user_id, view, regdate, last_edit_at);
 					}
 				}
 				

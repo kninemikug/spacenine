@@ -2,8 +2,6 @@ package miniProject;
 
 import java.util.Scanner;
 
-import oracle.net.aso.l;
-
 public class Operation {
     static Scanner sc = new Scanner(System.in);
     static String cmd;
