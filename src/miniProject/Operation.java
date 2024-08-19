@@ -32,9 +32,9 @@ public class Operation {
                 case "1" -> {
                     Users user = new Users();
                     boolean isSuccess = user.createAccount(id, pw, name, pno, adrs, gender);
-                    if (isSuccess) System.out.println(":   축하합니다. 가입이 완료되었습니다.\n:    로그인 후 서비스 이용 가능합니다.\n");
+                    if (isSuccess) System.out.println("     :   축하합니다. 가입이 완료되었습니다.\n     :    로그인 후 서비스 이용 가능합니다.\n");
                 }
-                case "2" -> System.out.println(":   정보 입력 화면으로 돌아갑니다.\n");
+                case "2" -> System.out.println("     :   정보 입력 화면으로 돌아갑니다.\n");
                 case "3" -> {}
             }
         } while (cmd.equals("2"));
@@ -87,7 +87,7 @@ public class Operation {
     public static String idFormatWrong(String id) {
         if (!id.matches("^[a-zA-Z0-9!@#$%^&*()_+=-]{6,20}$")) {
             System.out.println();
-            System.out.println(":   입력 형식이 잘못되었습니다.\n");
+            System.out.println("     :   입력 형식이 잘못되었습니다.\n");
             System.out.print("       > ID: ");
             id = Operation.sc.nextLine();
             return idFormatWrong(id);
@@ -98,7 +98,7 @@ public class Operation {
     public static String pwFormatWrong(String pw) {
         if (!pw.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+=-])[a-zA-Z\\d!@#$%^&*()_+=-]{6,20}$")) {
             System.out.println();
-            System.out.println(":   입력 형식이 잘못되었습니다.\n");
+            System.out.println("     :   입력 형식이 잘못되었습니다.\n");
             System.out.print("       > PASSWORD: ");
             pw = Operation.sc.nextLine();
             return idFormatWrong(pw);
@@ -109,7 +109,7 @@ public class Operation {
     public static String isNameNull(String name) {
         if (name.equals("")) {
             System.out.println();
-            System.out.println(":   값을 입력해주세요.\n");
+            System.out.println("     :   값을 입력해주세요.\n");
             System.out.print("       > 이름: ");
             name = Operation.sc.nextLine();
             return isNameNull(name);
@@ -120,7 +120,7 @@ public class Operation {
     public static String pnoFormatWrong(String pno) {
         if (!pno.matches("^\\d{2,4}-\\d{3,4}-\\d{4}$")) {
             System.out.println();
-            System.out.println(":   입력 형식이 잘못되었습니다.\n");
+            System.out.println("     :   입력 형식이 잘못되었습니다.\n");
             System.out.print("       > 전화번호: ");
             pno = Operation.sc.nextLine();
             return pnoFormatWrong(pno);
@@ -131,7 +131,7 @@ public class Operation {
     public static String isAddressNull(String adrs) {
         if (adrs.equals("")) {
             System.out.println();
-            System.out.println(":   값을 입력해주세요.\n");
+            System.out.println("     :   값을 입력해주세요.\n");
             System.out.print("       > 주소: ");
             adrs = Operation.sc.nextLine();
             return isAddressNull(adrs);
@@ -142,7 +142,7 @@ public class Operation {
     public static String genderInputWrong(String gender) {
         if (!gender.equals("1") && !gender.equals("2")) {
             System.out.println();
-            System.out.println(":   입력이 잘못되었습니다.\n");
+            System.out.println("     :   입력이 잘못되었습니다.\n");
             System.out.println("       (남성 : 1 | 여성 : 2)");
             System.out.print("       > ");
             gender = Operation.sc.nextLine();
@@ -163,12 +163,11 @@ public class Operation {
             
             boolean accountMatch = user.checkAccount(loginId, loginPw);
             if (accountMatch) {
-                System.out.printf(":   로그인 성공\n:    현재 로그인 계정 [ %s ]\n", loginId);
-                System.out.println("\n[로그인 완료]");
+                System.out.printf("\n     :   로그인 성공\n     :   현재 로그인 계정 [ %s ]\n", loginId);
                 user.updateLastLogin(loginId);
                 break;
             }
-            System.out.println("아이디 또는 비밀번호를 잘못 입력하셨습니다.");
+            System.out.println("\n     :   아이디 또는 비밀번호를 잘못 입력하셨습니다.");
         } while (true); 
 
         boolean isAdmin = user.checkAdmin(loginId);
@@ -181,7 +180,7 @@ public class Operation {
             while (!cmd.equals("3") && !cmd.equals("deleteaccount"));
         }
     }
-
+    
     public static void deleteAccount(Users user) {
         System.out.println("비밀번호를 입력하세요");
         String inputPw = Operation.sc.nextLine();
@@ -200,10 +199,10 @@ public class Operation {
             case "1" -> user.myInfo(loginId);
             case "2" -> {Board board = new Board(); board.list();}
             case "3" -> user.list();
-            case "4" -> {user.updateLastLogout(loginId); System.out.println("로그아웃 되었습니다.");}
+            case "4" -> {user.updateLastLogout(loginId); System.out.println("     :   로그아웃 되었습니다.");}
             case "5" -> {ConsoleDisplay.exit(); user.updateLastLogout(loginId); System.exit(0);}
-            case "deleteaccount" -> deleteAccount(user);
-            default -> System.out.println(":   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
+            case "deleteaccount" -> deleteAccount(user);        // 회원탈퇴 시크릿코드
+            default -> System.out.println("     :   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
         }
     }
 

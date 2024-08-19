@@ -43,10 +43,11 @@ public class Board {
 		int pageNum = 1;
 		int temp = 0;
 		boolean isLastPage = false;
+		int loop = 0;
 		do {
 			try {
 				String sql = "SELECT * FROM (SELECT rownum rnum, b.* FROM board b WHERE rownum <= ?*10 ORDER BY regdate DESC) " +
-								"WHERE rnum BETWEEN (?-1)*10 and ?*10 " +
+								"WHERE rnum BETWEEN (?-1)*10+1 and ?*10 " +
 								"AND rownum <= 10 " +
 								"ORDER BY regdate, no";
 				PreparedStatement pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
@@ -59,9 +60,9 @@ public class Board {
 					System.out.println("해당 페이지는 존재하지 않습니다.");
 					pageNum = temp;
 				} else {
-					System.out.println("[ " + pageNum + "페이지 ]");
-					ConsoleDisplay.boardFrame();
+					ConsoleDisplay.boardFrame(pageNum);
 					rs.beforeFirst();
+
 					while(rs.next()) {		
 						no = rs.getInt("no");
 						user_id = rs.getString("user_id");
@@ -81,14 +82,13 @@ public class Board {
 						last_edit_at = rs.getDate("last_edit_at");
 
 						System.out.printf("%-6d%-40s%-20s%-5d%-10s%-10s\n", no, title, user_id, view, regdate, last_edit_at);
+						loop++;
 					}
 				}
-				
-
-				if (!rs.next()) {
+				if (loop < 10) {
 					isLastPage = true;
 				}
-				
+				loop = 0;
 				rs.close();
 				pstmt.close();
 			} catch(SQLException e) {
@@ -99,19 +99,18 @@ public class Board {
 			ConsoleDisplay.boardMenu();
 
 			switch (Operation.cmd) {
-				case "p", "P":
+				case "p", "P" -> {
 					pageNum--;
 					if (pageNum < 1) {
 						System.out.println("첫 번째 페이지입니다.");
 						pageNum = 1;
 					}
-					break;
-				case "n", "N":
-					if (isLastPage) {
-						System.out.println("마지막 페이지입니다.");
-					} else pageNum++;
-					break;
-				case "f", "F":
+				}
+				case "n", "N" -> {
+					if (isLastPage) System.out.println("마지막 페이지입니다.");
+					else pageNum++;
+				}
+				case "f", "F" -> {
 					System.out.println("몇 페이지로 이동?");
 					try {
 						int input = Integer.parseInt(Operation.sc.nextLine());
@@ -120,19 +119,11 @@ public class Board {
 					} catch (Exception e) {
 						System.out.println("잘못된 입력입니다.");
 					}
-					
-					break;
-				case "v", "V":
-					view();
-					break;
-				case "w", "W":
-					create();
-					break;
-				case "q", "Q":
-					break;
-				default:
-					System.out.println("잘못된 입력입니다.");
-					break;
+				}
+				case "v", "V" -> view();
+				case "w", "W" -> create();
+				case "q", "Q" -> {}
+				default -> System.out.println("잘못된 입력입니다.");
 			}
 		} while (!Operation.cmd.equalsIgnoreCase("q"));
 		

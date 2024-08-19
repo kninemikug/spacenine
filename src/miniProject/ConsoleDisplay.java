@@ -110,7 +110,7 @@ public class ConsoleDisplay {
 
     //============= 마이페이지 ====================
     static void myPageAdmin() {
-        System.out.println();
+        System.out.println();               //회원탈퇴는 다크패턴으로..
         System.out.println("               =======  MY PAGE  =======");
         System.out.println("               |                       |");
         System.out.println("               |  1. 나의 정보 확인    |");
@@ -162,9 +162,9 @@ public class ConsoleDisplay {
     
 
     //============ 게시판 ===================
-    static void boardFrame() {
+    static void boardFrame(int pageNum) {
         System.out.println();
-		System.out.println("[게시물 목록]");
+        System.out.println("[ " + pageNum + " 페이지 ]");
 		System.out.println("-----------------------------------------------------------------------");
 		System.out.printf("%-6s%-40s%-20s%-5s%-10s%-10s\n", "no", "title", "writer", "view", "regdate", "last_edit_at");
 		System.out.println("-----------------------------------------------------------------------");
