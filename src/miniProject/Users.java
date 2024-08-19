@@ -29,25 +29,14 @@ public class Users {
     public Users() {
         try {
             Class.forName("oracle.jdbc.OracleDriver");
-
-			//연결하기
-			conn = DriverManager.getConnection(
-				"jdbc:oracle:thin:@localhost:1521/xe", 
-				"miniproj1", 
-				"1004"
-			);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+			conn = DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521/xe", "miniproj1", "1004");
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public boolean createAccount(String id, String pw, String name, String pno, String adrs, String gender) {
         try {
-            String sql = "" +
-                "INSERT INTO users (NO, ID, PASSWORD, NAME, PHONE, ADDRESS, GENDER, CREATED_AT)" +
-                "VALUES (users_seq.nextval, ?, ?, ?, ?, ?, ?, sysdate)";
+            String sql = "INSERT INTO users (NO, ID, PASSWORD, NAME, PHONE, ADDRESS, GENDER, CREATED_AT)" +
+                                    "VALUES (users_seq.nextval, ?, ?, ?, ?, ?, ?, sysdate)";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             pstmt.setString(2, pw);
@@ -57,13 +46,8 @@ public class Users {
             pstmt.setInt(6, Integer.parseInt(gender));
             pstmt.executeUpdate();
             pstmt.close();
-        } catch (SQLIntegrityConstraintViolationException e) {
-            System.out.println(":   이미 존재하는 ID입니다.");
-            return false;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (SQLIntegrityConstraintViolationException e) {System.out.println(":   이미 존재하는 ID입니다."); return false;
+        } catch (Exception e) {e.printStackTrace(); exit();}
         return true;
     }
 
@@ -75,18 +59,10 @@ public class Users {
             cstmt.registerOutParameter(2, Types.VARCHAR);
             try (cstmt) {
                 cstmt.executeUpdate();
-                if (!cstmt.getString(2).equals(loginPw)) {
-                    return false;
-                }
-            } catch (SQLException e) {
-                return false;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+                if (!cstmt.getString(2).equals(loginPw)) return false;
+            } catch (SQLException e) {return false;
+            } catch (Exception e) {e.printStackTrace();}
+        } catch (Exception e) {e.printStackTrace(); exit();}
         return true;
     }
 
@@ -97,10 +73,7 @@ public class Users {
             pstmt.setString(1, loginId);
             pstmt.executeUpdate();
             pstmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void updateLastLogout(String loginId) {
@@ -110,10 +83,7 @@ public class Users {
             pstmt.setString(1, loginId);
             pstmt.executeUpdate();
             pstmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public boolean checkAdmin(String loginId) {
@@ -123,13 +93,8 @@ public class Users {
             pstmt.setString(1, loginId);
             ResultSet rs = pstmt.executeQuery();
             rs.next();
-            if (rs.getInt("admin") == 1) {
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+            if (rs.getInt("admin") == 1) return true;
+        } catch (Exception e) {e.printStackTrace(); exit();}
         return false;
     }
 
@@ -146,16 +111,10 @@ public class Users {
             else {
                 rs.beforeFirst();
                 System.out.println("입력하신 내용과 일치하는 계정은 다음과 같습니다.");
-                while(rs.next()) {
-                    System.out.println("[ " + rs.getString("id") + " ]");
-                }
-                rs.close();
-                pstmt.close();
+                while(rs.next()) System.out.println("[ " + rs.getString("id") + " ]");
+                rs.close(); pstmt.close();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public boolean idExist(String id) {
@@ -164,88 +123,55 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, id);
             ResultSet rs  = pstmt.executeQuery();
-            if(rs.next()) {
-                rs.close();
-                pstmt.close();
-                return true;
-            }
-            rs.close();
-            pstmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        
+            if(rs.next()) {rs.close(); pstmt.close(); return true;}
+            rs.close(); pstmt.close();
+        } catch (Exception e) {e.printStackTrace(); return false;}
         return true;
     };
 
     public String newPw() {
         try {
-            System.out.println("새로운 비밀번호를 입력해주세요. [6~20자, 영문/숫자/특수문자 모두 포함]");
-            System.out.print("> ");
+            System.out.print("새로운 비밀번호를 입력해주세요. [6~20자, 영문/숫자/특수문자 모두 포함]\n> ");
             String newPw = Operation.sc.nextLine();
             newPw = Operation.pwFormatWrong(newPw);
             return newPw;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-            return "fail";
-        }
+        } catch (Exception e) {e.printStackTrace(); exit(); return "fail";}
     }
 
     public String newName() {
         try {
-            System.out.println("새로운 이름을 입력해주세요.");
-            System.out.print("> ");
+            System.out.print("새로운 이름을 입력해주세요.\n> ");
             String newName = Operation.sc.nextLine();
             newName = Operation.isNameNull(newName);
             return newName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-            return "fail";
-        }
+        } catch (Exception e) {e.printStackTrace(); exit(); return "fail";}
     }
 
     public String newPno() {
         try {
-            System.out.println("새로운 전화번호를 입력해주세요. [ex. 010-1234-5678]");
-            System.out.print("> ");
+            System.out.print("새로운 전화번호를 입력해주세요. [ex. 010-1234-5678]\n > ");
             String newPno = Operation.sc.nextLine();
             newPno = Operation.pnoFormatWrong(newPno);
             return newPno;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-            return "fail";
-        }
+        } catch (Exception e) {e.printStackTrace(); exit(); return "fail";}
     }
 
     public String newAdrs() {
         try {
-            System.out.println("새로운 주소를 입력해주세요.");
-            System.out.print("> ");
+            System.out.print("새로운 주소를 입력해주세요.\n> ");
             String newAdrs = Operation.sc.nextLine();
             newAdrs = Operation.isAddressNull(newAdrs);
             return newAdrs;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-            return "fail";
-        }
+        } catch (Exception e) {e.printStackTrace(); exit(); return "fail";}
     }
 
     public String newGender() {
         try {
-            System.out.println("새로운 성별을 입력해주세요.(남자:1, 여자:2)");
-            System.out.print("> ");
+            System.out.println("새로운 성별을 입력해주세요.(남자:1, 여자:2)\n> ");
             String newGender = Operation.sc.nextLine();
             newGender = Operation.genderInputWrong(newGender);
             return newGender;
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-            return "fail";
+        } catch (Exception e) {e.printStackTrace(); exit(); return "fail";
         }
     }
 
@@ -255,14 +181,9 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newPw);
             pstmt.setString(2, id);
-            pstmt.executeUpdate();
-            pstmt.close();
-
+            pstmt.executeUpdate(); pstmt.close();
             System.out.println("새로운 비밀번호로 변경이 완료되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void changeName(String id, String newName) {
@@ -271,14 +192,9 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newName);
             pstmt.setString(2, id);
-            pstmt.executeUpdate();
-            pstmt.close();
-
+            pstmt.executeUpdate(); pstmt.close();
             System.out.println("새로운 이름으로 변경이 완료되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void changePno(String id, String newPno) {
@@ -287,14 +203,9 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newPno);
             pstmt.setString(2, id);
-            pstmt.executeUpdate();
-            pstmt.close();
-
+            pstmt.executeUpdate(); pstmt.close();
             System.out.println("새로운 전화번호로 변경이 완료되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void changeAdrs(String id, String newAdrs) {
@@ -303,14 +214,9 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newAdrs);
             pstmt.setString(2, id);
-            pstmt.executeUpdate();
-            pstmt.close();
-
+            pstmt.executeUpdate(); pstmt.close();
             System.out.println("새로운 주소로 변경이 완료되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void changeGender(String id, String newGender) {
@@ -319,14 +225,9 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, newGender);
             pstmt.setString(2, id);
-            pstmt.executeUpdate();
-            pstmt.close();
-
+            pstmt.executeUpdate(); pstmt.close();
             System.out.println("새로운 성별로 변경이 완료되었습니다.");
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+        } catch (Exception e) {e.printStackTrace(); exit();}
     }
 
     public void myInfo(String loginId) {
@@ -335,7 +236,6 @@ public class Users {
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, loginId);
             ResultSet rs = pstmt.executeQuery();
-            
             if(rs.next()) {
                 System.out.println(rs.getString("id"));
                 System.out.println(rs.getString("name"));
@@ -343,12 +243,8 @@ public class Users {
                 System.out.println(rs.getString("address"));
                 System.out.println(rs.getInt("gender") == 1 ? "남성" : "여성");
             }
-            rs.close();
-            pstmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            exit();
-        }
+            rs.close(); pstmt.close();
+        } catch (Exception e) {e.printStackTrace(); exit();}
 
         //회원정보 수정
         System.out.println("수정(e) | 뒤로(q)");
@@ -358,7 +254,6 @@ public class Users {
                 System.out.println("비밀번호 입력");
                 edit = Operation.sc.nextLine();
                 if (!edit.equals(Operation.loginPw)) break;
-                
                 do {
                     System.out.println("어떤거 수정? 1.비밀번호 2.이름 3.전화번호 4.주소 5.성별");
                     edit = Operation.sc.nextLine();

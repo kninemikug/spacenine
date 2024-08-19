@@ -83,7 +83,7 @@ public class ConsoleDisplay {
         System.out.println();
         System.out.println("      |  1. 가입          ");
         System.out.println("      |  2. 다시 입력     ");
-        System.out.println("      |  3. 이전 화면으로  ");
+        System.out.println("      |  3. 취소하고 이전 화면으로  ");
         System.out.println();
         System.out.println("      . . . . . . . . . . . . . .");
         System.out.println();
