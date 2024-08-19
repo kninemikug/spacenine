@@ -90,6 +90,32 @@ public class Users {
         return true;
     }
 
+    public void updateLastLogin(String loginId) {
+        try {
+            String sql = "UPDATE users SET last_login = sysdate WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, loginId);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
+    public void updateLastLogout(String loginId) {
+        try {
+            String sql = "UPDATE users set last_logout = sysdate WHERE id = ?";
+            PreparedStatement pstmt = conn.prepareStatement(sql);
+            pstmt.setString(1, loginId);
+            pstmt.executeUpdate();
+            pstmt.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            exit();
+        }
+    }
+
     public boolean checkAdmin(String loginId) {
         try {
             String sql = "SELECT admin FROM users where id = ?";

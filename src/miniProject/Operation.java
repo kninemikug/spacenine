@@ -182,6 +182,9 @@ public class Operation {
             if (accountMatch) {
                 System.out.printf(":   로그인 성공\n:    현재 로그인 계정 [ %s ]\n", loginId);
                 System.out.println("\n[로그인 완료]");
+
+                user.updateLastLogin(loginId);
+                
                 break;
             }
             System.out.println("아이디 또는 비밀번호를 잘못 입력하셨습니다.");
@@ -200,6 +203,7 @@ public class Operation {
 
     public static void myPageAdmin() {
         ConsoleDisplay.myPageAdmin();
+        Users user = new Users();
         /*
          * 1: 나의 정보 확인
          * 2: 게시물 목록
@@ -214,7 +218,6 @@ public class Operation {
 
          switch (cmd) {
             case "1":
-                Users user = new Users();
                 user.myInfo(loginId);
                 break;
             case "2":
@@ -222,14 +225,15 @@ public class Operation {
                 board.list();
                 break;
             case "3":
-                Users users = new Users();
-                users.list();
+                user.list();
                 break;
             case "4":
+                user.updateLastLogout(loginId);
                 System.out.println("로그아웃 되었습니다.");
                 break;
             case "5":
                 ConsoleDisplay.exit();
+                user.updateLastLogout(loginId);
                 System.exit(0);
                 break;
          
@@ -241,10 +245,10 @@ public class Operation {
 
     public static void myPage() {
         ConsoleDisplay.myPage();
+        Users user = new Users();
 
         switch (cmd) {
             case "1":
-                Users user = new Users();
                 user.myInfo(loginId);
                 break;
             case "2":
@@ -252,10 +256,12 @@ public class Operation {
                 board.list();
                 break;
             case "3":
+                user.updateLastLogout(loginId);
                 System.out.println("로그아웃 되었습니다.");
                 break;
             case "4":
                 ConsoleDisplay.exit();
+                user.updateLastLogout(loginId);
                 System.exit(0);
                 break;
          
