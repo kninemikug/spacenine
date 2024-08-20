@@ -165,9 +165,9 @@ public class ConsoleDisplay {
     static void boardFrame(int pageNum) {
         System.out.println();
         System.out.println("[ " + pageNum + " 페이지 ]");
-		System.out.println("-----------------------------------------------------------------------");
-		System.out.printf("%-6s%-40s%-20s%-5s%-10s%-10s\n", "no", "title", "writer", "view", "regdate", "last_edit_at");
-		System.out.println("-----------------------------------------------------------------------");
+		System.out.println("---------------------------------------------------------------------------------------");
+		System.out.printf("%-4s%-33s%-12s%-7s%-10s%-5s\n", "번호", "제목", "작성자", "조회수", "작성", "수정");
+		System.out.println("---------------------------------------------------------------------------------------");
     }
     
     static void boardMenu() {

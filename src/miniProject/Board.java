@@ -18,8 +18,8 @@ public class Board {
     private String title;
     private String content;
     private int view;
-    private Date regdate;
-    private Date last_edit_at;
+    private String regdate;
+    private String last_edit_at;
 	private String password;
 
     private Connection conn;
@@ -40,6 +40,8 @@ public class Board {
     }
 
     public void list() {
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		
 		int pageNum = 1;
 		int temp = 0;
 		boolean isLastPage = false;
@@ -69,19 +71,31 @@ public class Board {
 						title = rs.getString("title");
 						content = rs.getString("content");
 						view = rs.getInt("view");
-						regdate = rs.getTimestamp("regdate");
+						regdate = rs.getString("regdate");
+						Date regdate_d = rs.getDate("regdate");
+						last_edit_at = rs.getString("regdate");
+						Date last_edit_at_d = rs.getDate("regdate");
 						
 						Date now = new Date();
 						Calendar cal = Calendar.getInstance();
 						cal.setTime(now);
 						cal.add(Calendar.DATE, -1);
 
-						if (regdate.compareTo(cal.getTime()) < 0) {
-							regdate = rs.getDate("regdate");
-						} else regdate = rs.getTime("regdate");
-						last_edit_at = rs.getDate("last_edit_at");
+						if (regdate_d.compareTo(cal.getTime()) < 0) {
+							regdate = regdate_d.toString();
+						} else {
+							regdate_d = rs.getTime("regdate");
+							regdate = sdf.format(regdate_d);
+						}
 
-						System.out.printf("%-6d%-40s%-20s%-5d%-10s%-10s\n", no, title, user_id, view, regdate, last_edit_at);
+						if (last_edit_at_d.compareTo(cal.getTime()) < 0) {
+							last_edit_at = last_edit_at_d.toString();
+						} else {
+							last_edit_at_d = rs.getTime("last_edit_at");
+							last_edit_at = sdf.format(last_edit_at_d);
+						}
+
+						System.out.printf("%-6d%-35s%-15s%-5d%-12s%-12s\n", no, title, user_id, view, regdate, last_edit_at);
 						loop++;
 					}
 
@@ -132,6 +146,8 @@ public class Board {
 	
 
 	public void view(){
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		
 		System.out.println("조회하려는 게시물 번호를 입력하세요");
 		int searchNo = Integer.parseInt(Operation.sc.nextLine());
 
@@ -145,8 +161,31 @@ public class Board {
 				user_id = rs.getString("user_id");
 				title = rs.getString("title");
 				content = rs.getString("content");
-				regdate = rs.getDate("regdate");
-				last_edit_at = rs.getDate("last_edit_at");
+				regdate = rs.getString("regdate");
+				Date regdate_d = rs.getDate("regdate");
+				last_edit_at = rs.getString("regdate");
+				Date last_edit_at_d = rs.getDate("regdate");
+
+				Date now = new Date();
+				Calendar cal = Calendar.getInstance();
+				cal.setTime(now);
+				cal.add(Calendar.DATE, -1);
+
+				if (regdate_d.compareTo(cal.getTime()) < 0) {
+					regdate = regdate_d.toString();
+				} else {
+					regdate_d = rs.getTime("regdate");
+					regdate = sdf.format(regdate_d);
+				}
+				if (last_edit_at_d.compareTo(cal.getTime()) < 0) {
+					last_edit_at = last_edit_at_d.toString();
+				} else {
+					last_edit_at_d = rs.getTime("last_edit_at");
+					last_edit_at = sdf.format(last_edit_at_d);
+				}
+
+
+
 				password = rs.getString("password");
 
 				System.out.println("게시물 번호: " + no);
