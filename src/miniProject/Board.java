@@ -95,7 +95,7 @@ public class Board {
 							last_edit_at = sdf.format(last_edit_at_d);
 						}
 
-						System.out.printf("%-6d%-35s%-15s%-5d%-12s%-12s\n", no, title, user_id, view, regdate, last_edit_at);
+						System.out.printf(" %-5d%-35s%-15s%-5d%-12s%-12s\n", no, title, user_id, view, regdate, last_edit_at);
 						loop++;
 					}
 
@@ -146,7 +146,12 @@ public class Board {
 	
 
 	public void view(){
+		Users user = new Users();
 		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		Date now = new Date();
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(now);
+		cal.add(Calendar.DATE, -1);
 		
 		System.out.println("조회하려는 게시물 번호를 입력하세요");
 		int searchNo = Integer.parseInt(Operation.sc.nextLine());
@@ -156,6 +161,7 @@ public class Board {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, searchNo);
 			ResultSet rs = pstmt.executeQuery();
+
 			if (rs.next()) {
 				no = rs.getInt("no");
 				user_id = rs.getString("user_id");
@@ -166,11 +172,7 @@ public class Board {
 				Date regdate_d = rs.getDate("regdate");
 				last_edit_at = rs.getString("regdate");
 				Date last_edit_at_d = rs.getDate("regdate");
-
-				Date now = new Date();
-				Calendar cal = Calendar.getInstance();
-				cal.setTime(now);
-				cal.add(Calendar.DATE, -1);
+				password = rs.getString("password");
 
 				if (regdate_d.compareTo(cal.getTime()) < 0) {
 					regdate = regdate_d.toString();
@@ -184,10 +186,6 @@ public class Board {
 					last_edit_at_d = rs.getTime("last_edit_at");
 					last_edit_at = sdf.format(last_edit_at_d);
 				}
-
-
-
-				password = rs.getString("password");
 
 				System.out.println("게시물 번호: " + no);
 				System.out.println("작성자: " + user_id);
@@ -205,11 +203,11 @@ public class Board {
 				System.out.println("---------\n");
 
 				if (user_id.equals(Operation.loginId)) {
-					System.out.println("수정(e) 삭제(d)) 나가기(q))");
+					System.out.println("수정(e) 삭제(d) 나가기(q)");
 					Operation.cmd = Operation.sc.nextLine();
 					
 					switch (Operation.cmd) {
-						case "e", "E":
+						case "e", "E" -> {
 							System.out.println("게시물 비밀번호를 입력하세요.");
 							String postPw = Operation.sc.nextLine();
 							if (postPw.equals(password)) {
@@ -226,7 +224,6 @@ public class Board {
 										line = Operation.sc.nextLine();
 									}
 									content = sb.toString();
-
 									System.out.println("입력을 종료했습니다. 이대로 등록할까요?");
 									System.out.println("1. 등록 | 2. 재입력 | 3. 나가기");
 									regConfirm = Operation.sc.nextLine();
@@ -246,42 +243,46 @@ public class Board {
 										exit();
 									}
 								}
-							}
-							
-							break;
-						case "d", "D":
+							}	
+						}
+						case "d", "D" -> {
 							System.out.println("게시물 비밀번호를 입력하세요.");
-							postPw = Operation.sc.nextLine();
+							String postPw = Operation.sc.nextLine();
 							if (postPw.equals(password)) {
 								try {
 									sql = "DELETE board WHERE no = ?";
 									pstmt = conn.prepareStatement(sql);
 									pstmt.setInt(1, no);
 									pstmt.executeUpdate();
-								} catch (Exception e) {
-									e.printStackTrace();
-									exit();
-								}
+									System.out.println("삭제가 완료되었습니다.");
+								} catch (Exception e) {e.printStackTrace(); exit();}
 							}
-							System.out.println("삭제가 완료되었습니다.");
-							
-							break;
-						case "q", "Q":
-							
-							break;
+						}
+						case "q", "Q" -> {}
+					}
+				} else if (user.checkAdmin(Operation.loginId)) {
+					System.out.println("삭제(d) 나가기(q)");
+					Operation.cmd = Operation.sc.nextLine();
+
+					switch (Operation.cmd) {
+						case "d", "D" -> {
+							try {
+								sql = "DELETE board WHERE no = ?";
+								pstmt = conn.prepareStatement(sql);
+								pstmt.setInt(1, no);
+								pstmt.executeUpdate();
+								System.out.println("삭제가 완료되었습니다.");
+							} catch (Exception e) {e.printStackTrace(); exit();}
+						}
+						case "q", "Q" -> {}
 					}
 				} else {
 					System.out.println("나가기(q)");
 					Operation.cmd = Operation.sc.nextLine();
 				}
-				
 			}
-			rs.close();
-			pstmt.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			exit();
-		}
+			rs.close(); pstmt.close();
+		} catch (Exception e) {e.printStackTrace(); exit();}
 	}
 
 	public void create() {
@@ -293,7 +294,6 @@ public class Board {
 			title = Operation.sc.nextLine();
 			System.out.println("내용 (내용 입력을 종료하려면 마지막 줄에 q를 입력하세요.)");
 			System.out.println("> ");
-			
 			StringBuilder sb = new StringBuilder();
 			String line = Operation.sc.nextLine();
 			while (!line.equalsIgnoreCase("q")) {
@@ -329,12 +329,8 @@ public class Board {
 					seqCancle.executeUpdate();
 					seqCancle.close();
 				}
-				
 				pstmt.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-				exit();
-			}
+			} catch (Exception e) {e.printStackTrace(); exit();}
 		}
 	}
 
@@ -353,8 +349,7 @@ public class Board {
 		if(conn != null) {
 			try {
 				conn.close();
-			} catch (SQLException e) {
-			}
+			} catch (SQLException e) {}
 		}
 		if(Operation.loginId != null) {
 			Users user = new Users();

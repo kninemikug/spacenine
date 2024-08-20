@@ -26,7 +26,13 @@ public class Operation {
     public static void signUp() {
         String id; String pw; String name; String pno; String adrs; String gender;
         do {
-            id = setId(); pw = setPw(); name = setName(); pno = setPno(); adrs = setAdrs(); gender = setGender();
+            id = setId();
+            pw = setPw();
+            name = setName();
+            pno = setPno();
+            adrs = setAdrs();
+            gender = setGender();
+            
             ConsoleDisplay.confrimSignUp(id, pw, name, pno, adrs, gender);
             switch (cmd) {
                 case "1" -> {
@@ -173,18 +179,25 @@ public class Operation {
         boolean isAdmin = user.checkAdmin(loginId);
         
         if (isAdmin) {
-            do myPageAdmin();
+            do myPageAdmin(user);
             while (!cmd.equals("4") && !cmd.equals("deleteaccount")); 
         } else {
-            do myPage();
+            do myPage(user);
             while (!cmd.equals("3") && !cmd.equals("deleteaccount"));
         }
     }
     
     public static void deleteAccount(Users user) {
-        System.out.println("비밀번호를 입력하세요");
-        String inputPw = Operation.sc.nextLine();
-        if (inputPw.equals(loginPw)) {
+        if (!user.checkAdmin(loginId)) {
+            System.out.println("비밀번호를 입력하세요");
+            String inputPw = Operation.sc.nextLine();
+            if (inputPw.equals(loginPw)) {
+                System.out.println("정말 탈퇴합니까?");
+                String delAcc = Operation.sc.nextLine();
+                if (delAcc.equalsIgnoreCase("y")) user.delete();
+                System.out.println("탈퇴 완료");
+            }
+        } else {
             System.out.println("정말 탈퇴합니까?");
             String delAcc = Operation.sc.nextLine();
             if (delAcc.equalsIgnoreCase("y")) user.delete();
@@ -192,9 +205,8 @@ public class Operation {
         }
     }
 
-    public static void myPageAdmin() {
+    public static void myPageAdmin(Users user) {
         ConsoleDisplay.myPageAdmin();
-        Users user = new Users();
         switch (cmd) {
             case "1" -> user.myInfo(loginId);
             case "2" -> {Board board = new Board(); board.list();}
@@ -206,9 +218,8 @@ public class Operation {
         }
     }
 
-    public static void myPage() {
+    public static void myPage(Users user) {
         ConsoleDisplay.myPage();
-        Users user = new Users();
         switch (cmd) {
             case "1" -> user.myInfo(loginId);
             case "2" -> {Board board = new Board(); board.list();}
