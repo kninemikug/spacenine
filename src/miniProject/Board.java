@@ -152,7 +152,7 @@ public class Board {
 		int searchNo = Integer.parseInt(Operation.sc.nextLine());
 
 		try {
-			String sql = "SELECT no, user_id, title, content, regdate, last_edit_at, password FROM board WHERE no = ?";
+			String sql = "SELECT no, user_id, title, content, \"VIEW\", regdate, last_edit_at, password FROM board WHERE no = ?";
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setInt(1, searchNo);
 			ResultSet rs = pstmt.executeQuery();
@@ -161,6 +161,7 @@ public class Board {
 				user_id = rs.getString("user_id");
 				title = rs.getString("title");
 				content = rs.getString("content");
+				view = rs.getInt("view");
 				regdate = rs.getString("regdate");
 				Date regdate_d = rs.getDate("regdate");
 				last_edit_at = rs.getString("regdate");
@@ -195,9 +196,10 @@ public class Board {
 				System.out.println("제목: " + title);
 				System.out.println("본문: " + content);
 
-				sql = "UPDATE board SET \"VIEW\" = boardview_seq.nextval WHERE no = ?";
+				sql = "UPDATE board SET \"VIEW\" = ? + 1 WHERE no = ?";
 				pstmt = conn.prepareStatement(sql);
-				pstmt.setInt(1, no);
+				pstmt.setInt(1, view);
+				pstmt.setInt(2, no);
 				pstmt.executeUpdate();
 
 				System.out.println("---------\n");
