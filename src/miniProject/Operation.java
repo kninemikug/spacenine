@@ -17,7 +17,7 @@ public class Operation {
                 case "2" -> signIn();
                 case "3" -> findAccount();
                 case "4" -> resetPw();
-                case "5" -> {ConsoleDisplay.exit();System.exit(0);}
+                case "5" -> {ConsoleDisplay.exit(); System.exit(0);}
                 default -> System.out.println(":   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
             }      
         }
@@ -32,13 +32,14 @@ public class Operation {
             pno = setPno();
             adrs = setAdrs();
             gender = setGender();
-            
-            ConsoleDisplay.confrimSignUp(id, pw, name, pno, adrs, gender);
+
+            ConsoleDisplay.confrimSignUp(id, pw, name, pno, adrs, gender);      // 입력한 정보 확인
             switch (cmd) {
                 case "1" -> {
                     Users user = new Users();
-                    boolean isSuccess = user.createAccount(id, pw, name, pno, adrs, gender);
-                    if (isSuccess) System.out.println("     :   축하합니다. 가입이 완료되었습니다.\n     :    로그인 후 서비스 이용 가능합니다.\n");
+                    if (user.createAccount(id, pw, name, pno, adrs, gender)) {
+                        System.out.println("     :   축하합니다. 가입이 완료되었습니다.\n     :    로그인 후 서비스 이용 가능합니다.\n");
+                    }
                 }
                 case "2" -> System.out.println("     :   정보 입력 화면으로 돌아갑니다.\n");
                 case "3" -> {}
@@ -175,10 +176,8 @@ public class Operation {
             }
             System.out.println("\n     :   아이디 또는 비밀번호를 잘못 입력하셨습니다.");
         } while (true); 
-
-        boolean isAdmin = user.checkAdmin(loginId);
         
-        if (isAdmin) {
+        if (user.checkAdmin(loginId)) {
             do myPageAdmin(user);
             while (!cmd.equals("4") && !cmd.equals("deleteaccount")); 
         } else {
@@ -192,17 +191,20 @@ public class Operation {
             System.out.println("비밀번호를 입력하세요");
             String inputPw = Operation.sc.nextLine();
             if (inputPw.equals(loginPw)) {
-                System.out.println("정말 탈퇴합니까?");
-                String delAcc = Operation.sc.nextLine();
-                if (delAcc.equalsIgnoreCase("y")) user.delete();
-                System.out.println("탈퇴 완료");
+                confirmDelAcc(user);
             }
         } else {
-            System.out.println("정말 탈퇴합니까?");
-            String delAcc = Operation.sc.nextLine();
-            if (delAcc.equalsIgnoreCase("y")) user.delete();
-            System.out.println("탈퇴 완료");
+            confirmDelAcc(user);
         }
+    }
+
+    public static void confirmDelAcc(Users user) {
+        System.out.println("정말 탈퇴합니까?");
+        String delAcc = Operation.sc.nextLine();
+        if (delAcc.equalsIgnoreCase("y")) {
+            user.delete();
+            System.out.println("탈퇴 완료");
+        }  
     }
 
     public static void myPageAdmin(Users user) {
