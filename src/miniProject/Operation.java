@@ -9,21 +9,22 @@ public class Operation {
     static String loginPw;
 
     public static void main(String[] args) {
+        Operation op = new Operation();
         ConsoleDisplay.title();
         while (true) {
             ConsoleDisplay.mainPage();
             switch (cmd) {
-                case "1" -> signUp();
-                case "2" -> signIn();
-                case "3" -> findAccount();
-                case "4" -> resetPw();
+                case "1" -> op.signUp();
+                case "2" -> op.signIn();
+                case "3" -> op.findAccount();
+                case "4" -> op.resetPw();
                 case "5" -> {ConsoleDisplay.exit(); System.exit(0);}
                 default -> System.out.println(":   잘못된 입력입니다.\n:   번호를 다시 입력해주세요.");
             }      
         }
     }
 
-    public static void signUp() {
+    public void signUp() {
         String id; String pw; String name; String pno; String adrs; String gender;
         do {
             id = setId();
@@ -49,49 +50,49 @@ public class Operation {
 
 
 
-    public static String setId() {
+    public String setId() {
         ConsoleDisplay.setId();        
         String id = Operation.sc.nextLine();
         id = idFormatWrong(id);
         return id;
     }
     
-    public static String setPw() {
+    public String setPw() {
         ConsoleDisplay.setPw();
         String pw = Operation.sc.nextLine();
         pw = pwFormatWrong(pw);
         return pw;
     }
 
-    public static String setName() {
+    public String setName() {
         ConsoleDisplay.setName();
         String name = Operation.sc.nextLine();
         name = isNameNull(name);
         return name;
     }
 
-    public static String setPno() {
+    public String setPno() {
         ConsoleDisplay.setPno();
         String pno = Operation.sc.nextLine();
         pno = pnoFormatWrong(pno);
         return pno;
     }
 
-    public static String setAdrs() {
+    public String setAdrs() {
         ConsoleDisplay.setAdrs();
         String adrs = Operation.sc.nextLine();
         adrs = isAddressNull(adrs);
         return adrs;
     }
 
-    public static String setGender() {
+    public String setGender() {
         ConsoleDisplay.setGender();
         String gender = Operation.sc.nextLine();
         gender = genderInputWrong(gender);
         return gender;
     }
 
-    public static String idFormatWrong(String id) {
+    public String idFormatWrong(String id) {
         if (!id.matches("^[a-zA-Z0-9!@#$%^&*()_+=-]{6,20}$")) {
             System.out.println();
             System.out.println("     :   입력 형식이 잘못되었습니다.\n");
@@ -102,18 +103,18 @@ public class Operation {
         return id;
     }
 
-    public static String pwFormatWrong(String pw) {
+    public String pwFormatWrong(String pw) {
         if (!pw.matches("^(?=.*[a-zA-Z])(?=.*\\d)(?=.*[!@#$%^&*()_+=-])[a-zA-Z\\d!@#$%^&*()_+=-]{6,20}$")) {
             System.out.println();
             System.out.println("     :   입력 형식이 잘못되었습니다.\n");
             System.out.print("       > PASSWORD: ");
             pw = Operation.sc.nextLine();
-            return idFormatWrong(pw);
+            return pwFormatWrong(pw);
         }
         return pw;
     }
 
-    public static String isNameNull(String name) {
+    public String isNameNull(String name) {
         if (name.equals("")) {
             System.out.println();
             System.out.println("     :   값을 입력해주세요.\n");
@@ -124,7 +125,7 @@ public class Operation {
         return name;
     }
     
-    public static String pnoFormatWrong(String pno) {
+    public String pnoFormatWrong(String pno) {
         if (!pno.matches("^\\d{2,4}-\\d{3,4}-\\d{4}$")) {
             System.out.println();
             System.out.println("     :   입력 형식이 잘못되었습니다.\n");
@@ -135,7 +136,7 @@ public class Operation {
         return pno;
     }
 
-    public static String isAddressNull(String adrs) {
+    public String isAddressNull(String adrs) {
         if (adrs.equals("")) {
             System.out.println();
             System.out.println("     :   값을 입력해주세요.\n");
@@ -146,7 +147,7 @@ public class Operation {
         return adrs;
     }
 
-    public static String genderInputWrong(String gender) {
+    public String genderInputWrong(String gender) {
         if (!gender.equals("1") && !gender.equals("2")) {
             System.out.println();
             System.out.println("     :   입력이 잘못되었습니다.\n");
@@ -160,7 +161,7 @@ public class Operation {
 
 
 
-    public static void signIn() {
+    public void signIn() {
         Users user = new Users();
         do {
             ConsoleDisplay.inputId();
@@ -186,7 +187,7 @@ public class Operation {
         }
     }
     
-    public static void deleteAccount(Users user) {
+    public void deleteAccount(Users user) {
         if (!user.checkAdmin(loginId)) {
             System.out.println("비밀번호를 입력하세요");
             String inputPw = Operation.sc.nextLine();
@@ -198,7 +199,7 @@ public class Operation {
         }
     }
 
-    public static void confirmDelAcc(Users user) {
+    public void confirmDelAcc(Users user) {
         System.out.println("정말 탈퇴합니까?");
         String delAcc = Operation.sc.nextLine();
         if (delAcc.equalsIgnoreCase("y")) {
@@ -207,7 +208,7 @@ public class Operation {
         }  
     }
 
-    public static void myPageAdmin(Users user) {
+    public void myPageAdmin(Users user) {
         ConsoleDisplay.myPageAdmin();
         switch (cmd) {
             case "1" -> user.myInfo(loginId);
@@ -220,7 +221,7 @@ public class Operation {
         }
     }
 
-    public static void myPage(Users user) {
+    public void myPage(Users user) {
         ConsoleDisplay.myPage();
         switch (cmd) {
             case "1" -> user.myInfo(loginId);
@@ -232,7 +233,7 @@ public class Operation {
          }
     }
 
-    public static void findAccount() {
+    public void findAccount() {
         Users user = new Users();
         ConsoleDisplay.findAccount();
         ConsoleDisplay.setName();
@@ -242,7 +243,7 @@ public class Operation {
         user.matchInfo(name, pno);
     }
 
-    public static void resetPw() {
+    public void resetPw() {
         Users user = new Users();
         ConsoleDisplay.resetPw();
         String id = Operation.sc.nextLine();
